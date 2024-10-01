@@ -1,3 +1,4 @@
+import httpx
 import uvicorn
 from fastapi import FastAPI, APIRouter
 
@@ -41,12 +42,13 @@ server_node_app_service_api = APIRouter(prefix="/api", tags=["Service API"])
 
 @server_node_app_service_api.get("/{service_name}/{service_api_path}")
 async def services(service_name: str, service_api_path: str):
-    
+
 
     pass
 
 server_node_app.include_router(server_node_app_client_node_router)
 server_node_app.include_router(server_node_app_client_service_router)
+server_node_app.include_router(server_node_app_service_api)
 
 if __name__ == '__main__':
     uvicorn.run(server_node_app, host='0.0.0.0', port=58000)
