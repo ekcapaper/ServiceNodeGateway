@@ -47,10 +47,22 @@ async def services(service_name: str, service_api_path: str):
     # 어차피 나중에 프록시 서버를 열어서 제공할 에정
     # 따라서 127.0.0.1이 될 것이다.
     # 대신 포트는 프록시 서버를 통해서 어디로 갈지를 결정해야 하므로 필요한 부분이다.
-
-
-
-    pass
+    # 클라이언트 노드의 목적지 포트이다. 하나의 API에서 모든 것을 처리할 수 있도록 한다.
+    # 나중에 어떻게 어떤 IP로 호출할 수 있는지에 대한 정보를 샘플로써 제공하고 openapi.json으로도 제공한다.
+    # 자신의 127.0.0.1 에서 나중에 프록시를 켜서 넣는다.
+    async with httpx.AsyncClient() as client:
+        try:
+            # 내부 API에 요청 보내기
+            api_nodes = "http://" + "127.0.0.1" + ":" + str(service_space["node-service-port"])+"/"+service_api_path
+            response = await client.get(f"{api_nodes}")
+            # 응답이 성공적일 경우 그대로 반환
+            return response.json()
+        except httpx.RequestError as e:
+            # 요청 에러 발생 시 오류 메시지 반환
+            return {
+                "status_code": 500,
+                "error": str(e)
+            }
 
 server_node_app.include_router(server_node_app_client_node_router)
 server_node_app.include_router(server_node_app_client_service_router)
