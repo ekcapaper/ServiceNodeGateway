@@ -1,3 +1,5 @@
+from typing import Optional
+
 import httpx
 import uvicorn
 from fastapi import FastAPI, APIRouter
@@ -41,7 +43,7 @@ async def nodes_services():
 server_node_app_service_api = APIRouter(prefix="/api", tags=["Service API"])
 
 @server_node_app_service_api.get("/{service_name}/{service_api_path}")
-async def services(service_name: str, service_api_path: str):
+async def services(service_name: str, service_api_path: Optional[str]):
     # 포트 정보 뽑기
     service_info = service_space[service_name]
     # 어차피 나중에 프록시 서버를 열어서 제공할 에정
@@ -53,7 +55,7 @@ async def services(service_name: str, service_api_path: str):
     async with httpx.AsyncClient() as client:
         try:
             # 내부 API에 요청 보내기
-            api_nodes = "http://" + "127.0.0.1" + ":" + str(service_space["node-service-port"])+"/"+service_api_path
+            api_nodes = "http://" + "127.0.0.1" + ":" + str(service_info["node-service-port"])+"/"+service_api_path
             response = await client.get(f"{api_nodes}")
             # 응답이 성공적일 경우 그대로 반환
             return response.json()
