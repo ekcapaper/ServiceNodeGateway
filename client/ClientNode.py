@@ -57,11 +57,13 @@ async def nodes_services():
 # 포트를 그대로 사용하는 것으로 오해할 수 있으므로 이 부분을 확실하게 이렇게 호출하라는 것으로 명시적으로 보여준다.
 # 사실 처음에 구상할 때에는 포트를 그대로 제공해서 하는 방식으로도 생각을 했지만 이 경우에는 서버측의 포트인지 클라이언트의 포트인지가 혼란스러워서
 # API 게이트웨이 하나를 두고 여기에서 등록된 노드들의 API를 호출해주는 식으로 변경
+@client_node_app_client_node_services_router.get("/samples")
+async def nodes_samples():
+
 
 # server 연동
 # 정보 보여주기
 
-# 프론트측에서 처리해도 될 내용이지만 ssh로 연결하는 부분을 처리하기 위해서 별도의 웹 서버로 뺀 부분
 
 client_node_app.include_router(client_node_app_client_node_router)
 client_node_app.include_router(client_node_app_client_node_services_router)
