@@ -9,8 +9,8 @@ server_ip = "127.0.0.1"
 server_port = 58000
 
 # 이 부분은 로그인 시에 변경될 내용
-service_name = "sample-node"
-service_password = "abcd"
+node_name = "sample-node"
+node_password = "abcd"
 
 client_node_app_client_node_router = APIRouter(prefix="/nodes", tags=["Node"])
 
@@ -59,10 +59,11 @@ async def nodes_services():
 # API 게이트웨이 하나를 두고 여기에서 등록된 노드들의 API를 호출해주는 식으로 변경
 @client_node_app_client_node_services_router.get("/samples")
 async def nodes_samples():
-
+    response_json = await nodes_services()
 
 # server 연동
 # 정보 보여주기
+# 호출이 성공했는지 실패했는지 그리고 기록 정보들
 
 
 client_node_app.include_router(client_node_app_client_node_router)
