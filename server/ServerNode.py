@@ -8,28 +8,33 @@ server_node_app_client_node_router = APIRouter(prefix="/nodes", tags=["Node"])
 
 nodes_space = {
     "sample-node": {
-        "password": "abcd"
+        "node-name": "sample-node",
+        "node-password": "abcd"
     }
 }
 
 service_space = {
-    ""
+    "sample-service": {
+        "node-name": "sample-node",
+        "node-service-name": "sample-service",
+        "node-service-port": 58002
+    }
 }
-
-services_space = {}
 
 # server 연동
 # server의 node 등록 정보
 # 노드를 등록할 수 있도록 제공한다. 이때 그냥 가지고 있고 등록할 수 있도록ㄷ 하는 형태로 한다.
 @server_node_app_client_node_router.get("")
 async def nodes():
+    global nodes_space
     return nodes_space
 
 # server 연동
 # server의 node의 서비스, 포트 등록 정보
 @server_node_app_client_node_router.post("/services")
 async def nodes_services():
-    return {"message": "Hello World"}
+    global nodes_space
+    return service_space
 
 
 
