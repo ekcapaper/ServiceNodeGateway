@@ -42,6 +42,12 @@ server_node_app_service_api = APIRouter(prefix="/api", tags=["Service API"])
 
 @server_node_app_service_api.get("/{service_name}/{service_api_path}")
 async def services(service_name: str, service_api_path: str):
+    # 포트 정보 뽑기
+    service_info = service_space[service_name]
+    # 어차피 나중에 프록시 서버를 열어서 제공할 에정
+    # 따라서 127.0.0.1이 될 것이다.
+    # 대신 포트는 프록시 서버를 통해서 어디로 갈지를 결정해야 하므로 필요한 부분이다.
+
 
 
     pass
