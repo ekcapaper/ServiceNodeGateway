@@ -39,8 +39,10 @@ async def nodes_services():
 
 server_node_app_service_api = APIRouter(prefix="/api", tags=["Service API"])
 
-@server_node_app_service_api.get("/{service_name}")
-async def services(service_name: str):
+@server_node_app_service_api.get("/{service_name}/{service_api_path}")
+async def services(service_name: str, service_api_path: str):
+    
+
     pass
 
 server_node_app.include_router(server_node_app_client_node_router)
