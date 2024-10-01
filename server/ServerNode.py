@@ -4,6 +4,9 @@ from fastapi import FastAPI
 app = FastAPI()
 
 
+
+
+# client 공통 부문
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
@@ -14,4 +17,4 @@ async def say_hello(name: str):
     return {"message": f"Hello {name}"}
 
 if __name__ == '__main__':
-    uvicorn.run(app, host='0.0.0.0', port=8000)
+    uvicorn.run(app, host='0.0.0.0', port=58000)
