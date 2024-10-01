@@ -1,3 +1,4 @@
+import httpx
 import uvicorn
 from fastapi import FastAPI, APIRouter
 
@@ -18,13 +19,38 @@ client_node_app_client_node_router = APIRouter(prefix="/nodes", tags=["Node"])
 # 노드를 등록할 수 있도록 제공한다. 이때 그냥 가지고 있고 등록할 수 있도록ㄷ 하는 형태로 한다.
 @client_node_app_client_node_router.get("")
 async def nodes():
-    return {"message": "Hello World"}
+    server_api_nodes = "http://" + server_ip + ":" + str(server_port)+"/nodes"
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(server_api_nodes)
+            # 응답 그대로 반환 (상태 코드 포함)
+            return response.json()
 
+        except httpx.RequestError as e:
+            # 요청 에러 발생 시 오류 응답을 그대로 반환
+            return {
+                "status_code": 500,
+                "error": str(e)
+            }
+
+client_node_app_client_node_services_router = APIRouter(prefix="/services", tags=["Service"])
 # server 연동
 # server의 node의 서비스, 포트 등록 정보
-@client_node_app_client_node_router.post("/services")
+@client_node_app_client_node_services_router.get("")
 async def nodes_services():
-    return {"message": "Hello World"}
+    server_api_nodes = "http://" + server_ip + ":" + str(server_port)+"/services"
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(server_api_nodes)
+            # 응답 그대로 반환 (상태 코드 포함)
+            return response.json()
+
+        except httpx.RequestError as e:
+            # 요청 에러 발생 시 오류 응답을 그대로 반환
+            return {
+                "status_code": 500,
+                "error": str(e)
+            }
 
 # server 연동
 # server의 node에서 샘플 코드를 보여준다.
@@ -38,6 +64,7 @@ async def nodes_services():
 # 프론트측에서 처리해도 될 내용이지만 ssh로 연결하는 부분을 처리하기 위해서 별도의 웹 서버로 뺀 부분
 
 client_node_app.include_router(client_node_app_client_node_router)
+client_node_app.include_router(client_node_app_client_node_services_router)
 
 if __name__ == '__main__':
     uvicorn.run(client_node_app, host='0.0.0.0', port=58001)

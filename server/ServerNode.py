@@ -5,7 +5,6 @@ server_node_app = FastAPI()
 
 server_node_app_client_node_router = APIRouter(prefix="/nodes", tags=["Node"])
 
-
 nodes_space = {
     "sample-node": {
         "node-name": "sample-node",
@@ -29,16 +28,23 @@ async def nodes():
     global nodes_space
     return nodes_space
 
+
+server_node_app_client_service_router = APIRouter(prefix="/services", tags=["Node"])
 # server 연동
 # server의 node의 서비스, 포트 등록 정보
-@server_node_app_client_node_router.post("/services")
+@server_node_app_client_service_router.get("")
 async def nodes_services():
     global nodes_space
     return service_space
 
+server_node_app_service_api = APIRouter(prefix="/api", tags=["Service API"])
 
+@server_node_app_service_api.get("/{service_name}")
+async def services(service_name: str):
+    pass
 
 server_node_app.include_router(server_node_app_client_node_router)
+server_node_app.include_router(server_node_app_client_service_router)
 
 if __name__ == '__main__':
     uvicorn.run(server_node_app, host='0.0.0.0', port=58000)
