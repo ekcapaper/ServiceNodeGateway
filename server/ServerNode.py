@@ -6,15 +6,24 @@ server_node_app = FastAPI()
 server_node_app_client_node_router = APIRouter(prefix="/nodes", tags=["Node"])
 
 
-nodes_space = {}
+nodes_space = {
+    "sample-node": {
+        "password": "abcd"
+    }
+}
 
+service_space = {
+    ""
+}
+
+services_space = {}
 
 # server 연동
 # server의 node 등록 정보
 # 노드를 등록할 수 있도록 제공한다. 이때 그냥 가지고 있고 등록할 수 있도록ㄷ 하는 형태로 한다.
 @server_node_app_client_node_router.get("")
 async def nodes():
-    return {"message": "Hello World"}
+    return nodes_space
 
 # server 연동
 # server의 node의 서비스, 포트 등록 정보

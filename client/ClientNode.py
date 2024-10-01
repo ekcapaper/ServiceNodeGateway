@@ -8,7 +8,7 @@ server_ip = "127.0.0.1"
 server_port = 58000
 
 # 이 부분은 로그인 시에 변경될 내용
-service_name = "service"
+service_name = "sample-node"
 service_password = "abcd"
 
 client_node_app_client_node_router = APIRouter(prefix="/nodes", tags=["Node"])
