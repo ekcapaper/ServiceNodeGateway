@@ -15,6 +15,8 @@ os.environ['SERVER_CONTROL_API_PORT'] = "58000"
 os.environ["SERVER_SSH_USER"] = ""
 os.environ["SERVER_SSH_USER_PASSWORD"] = ""
 
+os.environ["LOCAL_SSH_PORT"] = "22"
+
 client_node_app = FastAPI()
 
 

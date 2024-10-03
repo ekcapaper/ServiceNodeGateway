@@ -67,7 +67,7 @@ async def create_reverse_ssh_tunnel(
         remote_port = response.json()["port"]
         context.remote_ssh_port = remote_port
 
-    local_port = 22
+    local_port = int(os.getenv('LOCAL_SSH_PORT'))
     async with asyncssh.connect(
             host=server_host,
             port=server_port,
