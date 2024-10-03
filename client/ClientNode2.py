@@ -12,7 +12,8 @@ import os
 
 # 환경 변수 설정
 os.environ['SERVER_CONTROL_API_PORT'] = "58000"
-
+os.environ["SERVER_SSH_USER"] = ""
+os.environ["SERVER_SSH_USER_PASSWORD"] = ""
 
 client_node_app = FastAPI()
 

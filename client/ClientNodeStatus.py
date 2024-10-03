@@ -6,6 +6,16 @@ from abc import ABC, abstractmethod
 import asyncssh
 import httpx
 
+class ProceedException(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
+class TurnBackException(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
 
 class ConnectionState(ABC):
     @abstractmethod
@@ -51,6 +61,9 @@ async def create_reverse_ssh_tunnel(
     async with httpx.AsyncClient() as client:
         url = f"http://{context.server_host}:{os.getenv('SERVER_CONTROL_API_PORT')}/port/random"
         response = await client.get(url)
+        # error
+        if response.status_code != 200:
+            raise ProceedException("Failed port random")
         remote_port = response.json()["port"]
         context.remote_ssh_port = remote_port
 
@@ -58,8 +71,8 @@ async def create_reverse_ssh_tunnel(
     async with asyncssh.connect(
             host=server_host,
             port=server_port,
-            username=node_name,
-            password=node_password,
+            username=os.getenv('SERVER_SSH_USER'),
+            password=os.getenv('SERVER_SSH_USER_PASSWORD'),
             known_hosts=None
     ) as conn:
         # 리버스 포트 포워딩 설정
@@ -89,6 +102,8 @@ class RequestConnectReverseSSHPort(ConnectionState):
                 "node_name": context.node_name,
                 "node_password": context.node_password
             })
+            if response.status_code != 200:
+                return
 
         context.background_tasks.add_task(
             create_reverse_ssh_tunnel,
@@ -133,6 +148,8 @@ class RequestConnectProxyPort(ConnectionState):
             url = f"http://{context.server_host}:{os.getenv('SERVER_CONTROL_API_PORT')}/port/random"
             response = await client.get(url)
             proxy_port = response.json()["port"]
+            if response.status_code != 200:
+                raise ProceedException("Failed port random")
 
             url = f"http://{context.server_host}:{os.getenv('SERVER_CONTROL_API_PORT')}/proxy/provide"
             data = {
@@ -142,6 +159,9 @@ class RequestConnectProxyPort(ConnectionState):
                 "proxy_port": int(proxy_port)
             }
             response = await client.post(url, json=data)
+            if response.status_code != 200:
+                raise ProceedException("Failed proxy")
+
             context.proxy_port = proxy_port
         context.state = EstablishedProxyPort()
 
@@ -166,6 +186,8 @@ class EstablishedProxyPort(ConnectionState):
             response = await client.post(url, json={
                 "node_name": context.node_name,
             })
+            if response.status_code != 200:
+                raise TurnBackException("Failed disconnect")
 
         context.state = RequestConnectProxyPort()
 
