@@ -10,9 +10,6 @@ from pydantic import BaseModel
 from fastapi import Request, Response
 import os
 
-os.environ["CLIENT_SSH_USER"] = ""
-os.environ["CLIENT_SSH_USER_PASSWORD"] = ""
-
 # DB
 db = SqliteDatabase('nodes.db')
 
@@ -97,7 +94,7 @@ async def create_reverse_ssh_tunnel(remote_ssh_port, proxy_port, node_name, node
     local_socks_port = proxy_port
 
 
-    async with asyncssh.connect(host=remote_host, port=remote_ssh_port, username=os.getenv('CLIENT_SSH_USER'), password=os.getenv('CLIENT_SSH_USER_PASSWORD'), known_hosts=None) as conn:
+    async with asyncssh.connect(host=remote_host, port=remote_ssh_port, username=node_name, password=node_password, known_hosts=None) as conn:
         # 리버스 포트 포워딩 설정
         ssh_listener = await conn.forward_socks("127.0.0.1", local_socks_port)
         Node.update(proxy_port=proxy_port).where(Node.node_name == node_name).execute()
